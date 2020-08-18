@@ -25,7 +25,8 @@ def load_imdb(imdb, movies):
 
 def count(data, mov_or_show):
     """
-    Prints count of different titles each platform has available in the given dataset
+    Prints count of different titles each platform has available in the
+    given dataset
     """
     print(mov_or_show, ': In this dataset there are...')
     print(len(data), 'total', mov_or_show, '!')
@@ -39,20 +40,24 @@ def count(data, mov_or_show):
     print(len(data[disney]), 'available on Disney+')
     print()
 
+
 def avg_rating(data):
     """
     Print overall average for each streaming platforms' available
     movie and tv show ratings
     """
     # Convert rotten tomatoes to 1-10 scale to match imdb scale
-    avg_rating = data[['Title', 'IMDb', 'Rotten Tomatoes', 'Netflix', 'Hulu', 'Prime Video',
-                       'Disney+']]
+    avg_rating = data[['Title', 'IMDb', 'Rotten Tomatoes', 'Netflix', 'Hulu',
+                       'Prime Video', 'Disney+']]
     avg_rating = avg_rating.dropna()
-    print('There are a total of', len(avg_rating), " movies and shows with ratings.")
-    avg_rating['Rotten Tomatoes'] = avg_rating['Rotten Tomatoes'].str.rstrip('%s')
-    avg_rating['Rotten Tomatoes'] = avg_rating['Rotten Tomatoes'].astype(int) / 10
+    print('There are a total of', len(avg_rating),
+          'movies and shows with ratings.')
+    avg_rating['Rotten Tomatoes'] = avg_rating['Rotten Tomatoes'].str. \
+        rstrip('%s')
+    avg_rating['Rotten Tomatoes'] = avg_rating['Rotten Tomatoes'].astype(int) \
+        / 10
     # average imdb and rotten tomatoe rating for each movie/tv show
-    avg_rating['Average Rating'] = (avg_rating['IMDb'] + 
+    avg_rating['Average Rating'] = (avg_rating['IMDb'] +
                                     avg_rating['Rotten Tomatoes']) / 2
     # dict maps streaming platform to overall average rating
     avg_platf = {}
@@ -64,8 +69,8 @@ def avg_rating(data):
     avg_platf['hulu'] = avg_rating.loc[hulu, 'Average Rating'].mean()
     avg_platf['prime'] = avg_rating.loc[prime, 'Average Rating'].mean()
     avg_platf['disney'] = avg_rating.loc[disney, 'Average Rating'].mean()
-    print('Average ratings for available movies and tv shows on each' \
-           'streaming platform:')
+    print('Average ratings for available movies and tv shows on each',
+          'streaming platform:')
     for platf, rating in avg_platf.items():
         print(platf, ": ", rating)
     print()
@@ -77,7 +82,7 @@ def main():
     shows = pd.read_csv('data/TvShows_Streaming_Platforms.csv')
     imdb = pd.read_csv('data/IMDB_movies.csv')
     movs_shows = load_movs_shows(movies, shows)
-    imdb_merge = load_imdb(imdb, movies)
+    # imdb_merge = load_imdb(imdb, movies)
     # test
     print(movs_shows.head())
     print(imdb.head())
