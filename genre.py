@@ -30,7 +30,7 @@ def load_imdb(path_one, path_two):
     return merged
 
 
-def genre_analysis(df, site):
+def genre_count(df, site):
     df1 = df.loc[df[site] == 1, 'Genres']
     df1 = df1.dropna()
     df1 = df1.str.split(',')
@@ -44,10 +44,10 @@ def main():
     movs_shows = load_movs_shows('data/Movies_Streaming_Platforms.csv',
                                  'data/TvShows_Streaming_Platforms.csv')
     movies = pd.read_csv('data/Movies_Streaming_Platforms.csv')
-    genre_analysis(movies, 'Netflix')
-    genre_analysis(movies, 'Hulu')
-    genre_analysis(movies, 'Disney+')
-    genre_analysis(movies, 'Prime Video')
+    genre_count(movies, 'Netflix')
+    genre_count(movies, 'Hulu')
+    genre_count(movies, 'Disney+')
+    genre_count(movies, 'Prime Video')
 
 
 if __name__ == '__main__':
