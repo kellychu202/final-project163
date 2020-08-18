@@ -15,7 +15,7 @@ def load_movs_shows(movies, shows):
 def load_imdb(imdb, movies):
     """
     Return the joined dataset between two given files, one with imdb and
-    one with movie info returned dataset only has rows where corresponding
+    one with movie info, returned dataset only has rows where corresponding
     movie titles match in the given two datasets
     Resulting dataset has information of movies present in both given datasets
     """
