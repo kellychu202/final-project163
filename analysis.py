@@ -1,4 +1,7 @@
 import pandas as pd
+from sklearn.tree import DecisionTreeRegressor
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import MultiLabelBinarizer
 
 
 def load_movs_shows(movies, shows):
@@ -76,13 +79,41 @@ def avg_rating(data):
     print()
 
 
+
+def genre_count(data, site):
+    """
+    Given a dataframe and streaming platform, prints the names and count
+    of unique genres available on the platform
+    """
+    df = data.loc[data[site] == 1, 'Genres']
+    df = df.dropna()
+    df = df.str.split(',')
+    df = df.explode().unique()
+    length = len(df)
+    print(df)
+    print(site, 'has', length, 'genres')
+
+
+def predict_rating(data):
+    """
+    train 0.8 0.2 dtr use
+    genre turn into list split by "," 
+    get_dummies 
+    """
+    features = data.loc[:, data.columns == 'Genres']
+    features['Genres'] = features['Genres'].str.split(",")
+    mlb = MultiLabelBinarizer(sparse_output=True)
+    df = features.drop('Genres', 1).join(features.Genres.str.join('|').str.get_dummies())
+    df.sum(axis=0) 
+    
+
 def main():
     # datasets
     movies = pd.read_csv('data/Movies_Streaming_Platforms.csv')
     shows = pd.read_csv('data/TvShows_Streaming_Platforms.csv')
     imdb = pd.read_csv('data/IMDB_movies.csv')
     movs_shows = load_movs_shows(movies, shows)
-    # imdb_merge = load_imdb(imdb, movies)
+    imdb_mov = load_imdb(imdb, movies)
     # test
     print(movs_shows.head())
     print(imdb.head())
@@ -90,6 +121,11 @@ def main():
     avg_rating(movs_shows)
     count(movies, 'movies')
     count(shows, 'shows')
+    # genre selections
+    genre_count(movies, 'Netflix')
+    genre_count(movies, 'Hulu')
+    genre_count(movies, 'Disney+')
+    genre_count(movies, 'Prime Video')
 
 
 if __name__ == '__main__':
