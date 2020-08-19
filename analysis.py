@@ -1,7 +1,8 @@
 import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import accuracy_score
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 
 
 def load_movs_shows(movies, shows):
@@ -94,17 +95,32 @@ def genre_count(data, site):
     print(site, 'has', length, 'genres')
 
 
-def predict_rating(data):
+def predict_rating(data, feats):
     """
     train 0.8 0.2 dtr use
     genre turn into list split by "," 
     get_dummies 
     """
-    features = data.loc[:, data.columns == 'Genres']
+    features = data.loc[:, feats]
+    features = features.dropna()
+    # one hot encoding genres
     features['Genres'] = features['Genres'].str.split(",")
-    mlb = MultiLabelBinarizer(sparse_output=True)
-    df = features.drop('Genres', 1).join(features.Genres.str.join('|').str.get_dummies())
-    
+    temp = features.drop('Genres', 1).join(features.Genres.str.join('|').str.get_dummies())
+    labels = temp['IMDb']
+    features = temp.loc[:, temp.columns != 'IMDb']
+    # ml model
+    features_train, features_test, labels_train, labels_test = \
+        train_test_split(features, labels, test_size=0.2)
+    model = DecisionTreeRegressor()
+    model.fit(features_train, labels_train)
+    train_predictions = model.predict(features_train)
+    # training set
+    train_error = mean_squared_error(labels_train, train_predictions)
+    # test set
+    model.fit(features_test, labels_test)
+    train_prediction = model.predict(features_test)
+    test_error = mean_squared_error(labels_test, train_prediction)
+    return (train_error, test_error)
 
 
 def main():
@@ -126,6 +142,21 @@ def main():
     genre_count(movies, 'Hulu')
     genre_count(movies, 'Disney+')
     genre_count(movies, 'Prime Video')
+    print()
+    # ml dtr error with streaming platforms and genres features
+    feats1 = ['Netflix', 'Hulu', 'Prime Video',
+            'Disney+', 'Genres', 'IMDb']
+    print('With', feats1)
+    print('Training set mse', predict_rating(imdb_mov, feats1)[0])
+    print('Testing set mse', predict_rating(imdb_mov, feats1)[1])
+    print()
+    # platforms, genres, year, and duration
+    feats2 = ['Year', 'Netflix', 'Hulu', 'Prime Video',
+            'Disney+', 'Genres', 'duration', 'IMDb']
+    print('With', feats2)
+    print('Training set mse', predict_rating(imdb_mov, feats2)[0])
+    print('Testing set mse', predict_rating(imdb_mov, feats2)[1])
+    print()
 
 
 if __name__ == '__main__':
