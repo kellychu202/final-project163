@@ -26,22 +26,17 @@ def load_imdb(imdb, movies):
     return merged
 
 
-def count(data, mov_or_show):
+def count(data, mov_or_show, site):
     """
     Prints count of different titles each platform has available in the
     given dataset
     """
     print(mov_or_show, ': In this dataset there are...')
     print(len(data), 'total', mov_or_show, '!')
-    netflix = data['Netflix'] == 1
-    hulu = data['Hulu'] == 1
-    prime = data['Prime Video'] == 1
-    disney = data['Disney+'] == 1
-    print(len(data[netflix]), 'available on Netflix')
-    print(len(data[hulu]), 'available on Hulu')
-    print(len(data[prime]), 'available on Prime Video')
-    print(len(data[disney]), 'available on Disney+')
+    service = data[data[site] == 1]
+    print(str(len(service)) + ' ' + mov_or_show + ' available on ' + site)
     print()
+    return len(service)
 
 
 def avg_rating(data):
@@ -119,8 +114,14 @@ def main():
     print(imdb.head())
     # end test
     avg_rating(movs_shows)
-    count(movies, 'movies')
-    count(shows, 'shows')
+    count(movies, 'movies', 'Netflix')
+    count(movies, 'movies', 'Hulu')
+    count(movies, 'movies', 'Disney+')
+    count(movies, 'movies', 'Prime Video')
+    count(shows, 'shows', 'Netflix')
+    count(shows, 'shows', 'Hulu')
+    count(shows, 'shows', 'Disney+')
+    count(shows, 'shows', 'Prime Video')
     # genre selections
     genre_count(movies, 'Netflix')
     genre_count(movies, 'Hulu')
