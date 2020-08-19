@@ -1,6 +1,7 @@
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.preprocessing import MultiLabelBinarizer
 
 def load_movs_shows(movies, shows):
@@ -33,6 +34,7 @@ def genre_count(data, site):
     length = len(df)
     print(df)
     print(site, 'has', length, 'genres')
+    return length
 
 
 def movs_per_genre(data, site):
@@ -45,7 +47,29 @@ def movs_per_genre(data, site):
     mlb = MultiLabelBinarizer(sparse_output=True)
     df = genres.drop('Genres', 1).join(genres.Genres.str.join('|').str.get_dummies())
     print('The total count of movies per genre for', site)
-    print(df.sum(axis=0))
+    temp = df.sum(axis=0)
+    print(temp)
+    genre_list = list(temp.index)
+    count_list = list(temp)
+    total_movies = len(genres)
+    percent_list = []
+    for i in count_list:
+        val = (i / total_movies) * 100
+        percent_list.append(val)
+    
+    fig1 = plt.figure(figsize=(40,27))
+    plt.pie(percent_list, labels = genre_list, autopct=percent_list, rotatelabels=True)
+    plt.show()
+    
+    """
+    fig, ax = plt.subplots(figsize=(30, 15))
+    ax.bar(genre_list, percent_list)
+    plt.xlabel('Genre Types')
+    plt.ylabel('Percent of Movies')
+    plt.title('The Percent for Each Genre in ' + site)
+    location = 'results/' + site.lower() + '_genre_chart.png'
+    fig.savefig(location, bbox_inches='tight')
+    """
 
 
 def main():
@@ -54,11 +78,14 @@ def main():
     imdb = pd.read_csv('data/IMDB_movies.csv')
     movs_shows = load_movs_shows(movies, shows)
     imdb_mov = load_imdb(imdb, movies)
-    genre_count(movies, 'Netflix')
-    genre_count(movies, 'Hulu')
-    genre_count(movies, 'Disney+')
-    genre_count(movies, 'Prime Video')
-    movs_per_genre(imdb_mov, 'Netflix')
+    netflix_gecount = genre_count(movies, 'Netflix')
+    hulu_gecount = genre_count(movies, 'Hulu')
+    disney_gecount = genre_count(movies, 'Disney+')
+    prime_gecount = genre_count(movies, 'Prime Video')
+    movs_per_genre(movies, 'Netflix')
+    movs_per_genre(movies, 'Hulu')
+    movs_per_genre(movies, 'Disney+')
+    movs_per_genre(movies, 'Prime Video')
 
 
 if __name__ == '__main__':
