@@ -22,4 +22,14 @@ def test_count():
     assert_equals(5, analysis.count(small_tv, 'shows', 'Disney+'))
     assert_equals(5, analysis.count(small_tv, 'shows', 'Prime Video'))
 
-    
+def main():
+    """
+    Operates test functions
+    """
+    test_genre()
+    test_count()
+    print('Successful')
+
+
+if __name__ == '__main__':
+    main()
