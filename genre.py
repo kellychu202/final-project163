@@ -40,8 +40,7 @@ def movs_per_genre(data, site):
     Given dataset and streaming platform, prints total number of movies
     available for each genre in the site
     """
-    genre = data.columns == 'Genres'
-    genres = data.loc[data[site] == 1, genre] 
+    genres = data.loc[data[site] == 1, data.columns == 'Genres'] 
     genres['Genres'] = genres['Genres'].str.split(",")
     mlb = MultiLabelBinarizer(sparse_output=True)
     df = genres.drop('Genres', 1).join(genres.Genres.str.join('|').str.get_dummies())

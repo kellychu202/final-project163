@@ -104,8 +104,8 @@ def predict_rating(data):
     features['Genres'] = features['Genres'].str.split(",")
     mlb = MultiLabelBinarizer(sparse_output=True)
     df = features.drop('Genres', 1).join(features.Genres.str.join('|').str.get_dummies())
-    df.sum(axis=0) 
     
+
 
 def main():
     # datasets
