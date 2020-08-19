@@ -56,11 +56,10 @@ def movs_per_genre(data, site):
     for i in count_list:
         val = (i / total_movies) * 100
         percent_list.append(val)
-    
+    """
     fig1 = plt.figure(figsize=(40,27))
-    plt.pie(percent_list, labels = genre_list, autopct=percent_list, rotatelabels=True)
+    plt.pie(percent_list, labels = genre_list, rotatelabels=True)
     plt.show()
-    
     """
     fig, ax = plt.subplots(figsize=(30, 15))
     ax.bar(genre_list, percent_list)
@@ -69,7 +68,6 @@ def movs_per_genre(data, site):
     plt.title('The Percent for Each Genre in ' + site)
     location = 'results/' + site.lower() + '_genre_chart.png'
     fig.savefig(location, bbox_inches='tight')
-    """
 
 
 def main():
