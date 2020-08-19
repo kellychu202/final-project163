@@ -50,6 +50,13 @@ def movs_per_genre(data, site):
 
 def main():
     movies = pd.read_csv('data/Movies_Streaming_Platforms.csv')
+<<<<<<< HEAD
+    netflix = genre_count(movies, 'Netflix')
+    hulu = genre_count(movies, 'Hulu')
+    disney = genre_count(movies, 'Disney+')
+    prime = genre_count(movies, 'Prime Video')
+    netflix_data(movies, netflix)
+=======
     shows = pd.read_csv('data/TvShows_Streaming_Platforms.csv')
     imdb = pd.read_csv('data/IMDB_movies.csv')
     movs_shows = load_movs_shows(movies, shows)
@@ -59,6 +66,7 @@ def main():
     genre_count(movies, 'Disney+')
     genre_count(movies, 'Prime Video')
     movs_per_genre(imdb_mov, 'Netflix')
+>>>>>>> e0af4988e612cccd47a0104a5bff298cf6a043ae
 
 
 if __name__ == '__main__':
