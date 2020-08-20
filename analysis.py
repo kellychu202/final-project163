@@ -1,3 +1,10 @@
+"""
+Kelly Chu and Khoa Tran
+This program examines elements of movies and tv shows from various
+streaming platforms 
+"""
+
+
 import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import accuracy_score
