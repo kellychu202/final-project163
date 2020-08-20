@@ -44,7 +44,6 @@ def movs_per_genre(data, site):
     """
     genres = data.loc[data[site] == 1, data.columns == 'Genres'] 
     genres['Genres'] = genres['Genres'].str.split(",")
-    mlb = MultiLabelBinarizer(sparse_output=True)
     df = genres.drop('Genres', 1).join(genres.Genres.str.join('|').str.get_dummies())
     print('The total count of movies per genre for', site)
     temp = df.sum(axis=0)
