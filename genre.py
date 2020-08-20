@@ -3,6 +3,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn.preprocessing import MultiLabelBinarizer
+import statistics
 
 def load_movs_shows(movies, shows):
     """
@@ -56,16 +57,36 @@ def movs_per_genre(data, site):
     for i in count_list:
         val = (i / total_movies) * 100
         percent_list.append(val)
+    avg = sum(percent_list) / len(percent_list)
+    print(site + " has an average genre percentage of " + str(avg))
+    std = statistics.stdev(percent_list)
+    print(site + " has an standard deviation for genre percentage of " + str(std))
+
+    fig1 = plt.figure(figsize=(10, 7))
+    plt.boxplot(percent_list)
+    plt.title('Box Plot of Genre Percentage for ' + site, fontsize=25, y=1.02)
+    location2 = 'results/' + site.lower() + '_genre_boxplot.png'
+    fig1.savefig(location2, bbox_inches='tight')
+
+
+    fig2 = plt.figure(figsize=(10, 7))
+    plt.boxplot(count_list)
+    plt.title('Box Plot of Genre Count for ' + site, fontsize=25, y=1.02)
+    location3 = 'results/' + site.lower() + '_genrecount_boxplot.png'
+    fig2.savefig(location3, bbox_inches='tight')
     """
     fig1 = plt.figure(figsize=(40,27))
     plt.pie(percent_list, labels = genre_list, rotatelabels=True)
     plt.show()
     """
-    fig, ax = plt.subplots(figsize=(30, 15))
-    ax.bar(genre_list, percent_list)
-    plt.xlabel('Genre Types')
-    plt.ylabel('Percent of Movies')
-    plt.title('The Percent for Each Genre in ' + site)
+
+
+    fig, ax = plt.subplots(figsize=(56, 15))
+    ax.bar(genre_list, percent_list, width=0.6)
+    plt.xlabel('Genre Types', fontsize=30, labelpad=15)
+    plt.ylabel('Percent of Movies', fontsize=30, labelpad=15)
+    plt.title('The Percent for Each Genre in ' + site, fontsize=35, y=1.02)
+    plt.tick_params(labelsize=20, pad=7)
     location = 'results/' + site.lower() + '_genre_chart.png'
     fig.savefig(location, bbox_inches='tight')
 
