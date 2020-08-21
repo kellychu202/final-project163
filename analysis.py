@@ -1,3 +1,10 @@
+"""
+Kelly Chu and Khoa Tran
+This program examines elements of movies and tv shows from various
+streaming platforms 
+"""
+
+
 import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.metrics import accuracy_score
@@ -32,10 +39,10 @@ def count(data, mov_or_show, site):
     Prints count of different titles each platform has available in the
     given dataset
     """
-    print(mov_or_show, ': In this dataset there are...')
+    print(site, ': In this dataset there are...')
     print(len(data), 'total', mov_or_show, '!')
     service = data[data[site] == 1]
-    print(str(len(service)) + ' ' + mov_or_show + ' available on ' + site)
+    print(len(service), mov_or_show, 'available on', site)
     print()
     return len(service)
 
@@ -55,6 +62,7 @@ def avg_rating(data):
         rstrip('%s')
     avg_rating['Rotten Tomatoes'] = avg_rating['Rotten Tomatoes'].astype(int) \
         / 10
+    avg_rating.loc[avg_rating['Rotten Tomatoes'] < 1, 'Rotten Tomatoes'] = 1
     # average imdb and rotten tomatoe rating for each movie/tv show
     avg_rating['Average Rating'] = (avg_rating['IMDb'] +
                                     avg_rating['Rotten Tomatoes']) / 2
@@ -91,9 +99,10 @@ def genre_count(data, site):
 
 def predict_rating(data, feats):
     """
-    train 0.8 0.2 dtr use
-    genre turn into list split by "," 
-    get_dummies 
+    Given dataframe and column name of features to train on
+    Return tuple with mean square error of training
+    set and test set
+
     """
     features = data.loc[:, feats]
     features = features.dropna()
@@ -143,6 +152,11 @@ def main():
     genre_count(movies, 'Disney+')
     genre_count(movies, 'Prime Video')
     print()
+    feat = ['Year', 'Genres', 'duration', 'IMDb']
+    print('With', feat)
+    print('Training set mse', predict_rating(imdb_mov, feat)[0])
+    print('Testing set mse', predict_rating(imdb_mov, feat)[1])
+    print()
     # ml dtr error with streaming platforms and genres features
     feats1 = ['Netflix', 'Hulu', 'Prime Video',
             'Disney+', 'Genres', 'IMDb']
@@ -150,12 +164,19 @@ def main():
     print('Training set mse', predict_rating(imdb_mov, feats1)[0])
     print('Testing set mse', predict_rating(imdb_mov, feats1)[1])
     print()
-    # platforms, genres, year, and duration
-    feats2 = ['Year', 'Netflix', 'Hulu', 'Prime Video',
+    # platforms, genres, duration
+    feats2 = ['Netflix', 'Hulu', 'Prime Video',
             'Disney+', 'Genres', 'duration', 'IMDb']
     print('With', feats2)
     print('Training set mse', predict_rating(imdb_mov, feats2)[0])
     print('Testing set mse', predict_rating(imdb_mov, feats2)[1])
+    print()
+    # platforms, genres, year, and duration
+    feats3 = ['Year', 'Netflix', 'Hulu', 'Prime Video',
+            'Disney+', 'Genres', 'duration', 'IMDb']
+    print('With', feats3)
+    print('Training set mse', predict_rating(imdb_mov, feats3)[0])
+    print('Testing set mse', predict_rating(imdb_mov, feats3)[1])
     print()
 
 
