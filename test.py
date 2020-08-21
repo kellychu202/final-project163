@@ -10,6 +10,13 @@ def test_genre():
     assert_equals(5, genre.genre_count(small_movies, 'Disney+'))
     assert_equals(5, genre.genre_count(small_movies, 'Prime Video'))
 
+def test_unique_list():
+    small_movies = pd.read_csv('data/small_movies.csv')
+    assert_equals(5, genre.unquie_list(small_movies, 'Netflix'))
+    assert_equals(5, genre.unquie_list(small_movies, 'Hulu'))
+    assert_equals(5, genre.unquie_list(small_movies, 'Disney+'))
+    assert_equals(5, genre.unquie_list(small_movies, 'Prime Video'))
+
 def test_count():
     small_movies = pd.read_csv('data/small_movies.csv')
     small_tv = pd.read_csv('data/tvshows.csv')
