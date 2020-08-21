@@ -112,6 +112,10 @@ def main():
     movs_per_genre(movies, 'Hulu')
     movs_per_genre(movies, 'Disney+')
     movs_per_genre(movies, 'Prime Video')
+    net_df = unquie_list(movies, 'Netflix')
+    hulu_df = unquie_list(movies, 'Hulu')
+    dis_df = unquie_list(movies, 'Disney+')
+    prime_df = unquie_list(movies, 'Prime Video')
 
 
 if __name__ == '__main__':
