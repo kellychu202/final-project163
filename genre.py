@@ -1,3 +1,5 @@
+
+
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -28,6 +30,8 @@ def load_imdb(imdb, movies):
 
 
 def genre_count(data, site):
+    """
+    """
     df = data.loc[data[site] == 1, 'Genres']
     df = df.dropna()
     df = df.str.split(',')
@@ -38,6 +42,8 @@ def genre_count(data, site):
     return length
 
 def unquie_list(data, site):
+    """
+    """
     df = data.loc[data[site] == 1, 'Genres']
     df = df.dropna()
     df = df.str.split(',')
@@ -68,26 +74,18 @@ def movs_per_genre(data, site):
     print(site + " has an average genre percentage of " + str(avg))
     std = statistics.stdev(percent_list)
     print(site + " has an standard deviation for genre percentage of " + str(std))
-
+    # plot
     fig1 = plt.figure(figsize=(10, 7))
     plt.boxplot(percent_list)
     plt.title('Box Plot of Genre Percentage for ' + site, fontsize=25, y=1.02)
     location2 = 'results/' + site.lower() + '_genre_boxplot.png'
     fig1.savefig(location2, bbox_inches='tight')
-
-
     fig2 = plt.figure(figsize=(10, 7))
     plt.boxplot(count_list)
     plt.title('Box Plot of Genre Count for ' + site, fontsize=25, y=1.02)
     location3 = 'results/' + site.lower() + '_genrecount_boxplot.png'
     fig2.savefig(location3, bbox_inches='tight')
-    """
-    fig1 = plt.figure(figsize=(40,27))
-    plt.pie(percent_list, labels = genre_list, rotatelabels=True)
-    plt.show()
-    """
-
-
+    # plot
     fig, ax = plt.subplots(figsize=(56, 15))
     ax.bar(genre_list, percent_list, width=0.6)
     plt.xlabel('Genre Types', fontsize=30, labelpad=15)
