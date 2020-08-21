@@ -140,7 +140,9 @@ def unique_list(data, site):
 def movs_per_genre(data, site):
     """
     Given dataset and streaming platform, prints total number of movies
-    available for each genre in the site
+    available for each genre in the site, and the standard deviation. Also
+    create a box chart of the count of movies for each genre for the given site
+    and a bar chart of the percentage of movies for each genre for the given site. 
     """
     genres = data.loc[data[site] == 1, data.columns == 'Genres']
     df = split_genre(genres)

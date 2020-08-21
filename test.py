@@ -10,6 +10,9 @@ from cse163_utils import assert_equals
 
 
 def test_genre(data):
+    """
+    Test the genre count method in analysis
+    """
     assert_equals(14, analysis.genre_count(data, 'Netflix'))
     print()
     assert_equals(1, analysis.genre_count(data, 'Hulu'))
@@ -21,6 +24,9 @@ def test_genre(data):
 
 
 def test_unique_list(data):
+    """
+    Test the unqiue_list method in analysis
+    """
     assert_equals(['Action', 'Adventure', 'Sci-Fi', 'Thriller', 'Comedy',
                    'Western', 'Animation', 'Family', 'Biography', 'Drama',
                    'Music', 'War', 'Crime', 'Documentary'],
