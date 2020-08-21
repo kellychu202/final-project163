@@ -1,18 +1,15 @@
 """
 Kelly Chu and Khoa Tran
 This program examines elements of movies and tv shows from various
-streaming platforms 
+streaming platforms
 """
 
 
 import pandas as pd
 from sklearn.tree import DecisionTreeRegressor
-from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
 import statistics
 
 
@@ -51,10 +48,10 @@ def count(data, mov_or_show, site):
     return len(service)
 
 
-def avg_rating(data):
+def avg_rating(data, site):
     """
-    Print overall average for each streaming platforms' available
-    movie and tv show ratings
+    Print overall average rating for given streaming platforms' available
+    content given in data dataset
     """
     # Convert rotten tomatoes to 1-10 scale to match imdb scale
     avg_rating = data[['Title', 'IMDb', 'Rotten Tomatoes', 'Netflix', 'Hulu',
@@ -70,21 +67,9 @@ def avg_rating(data):
     # average imdb and rotten tomatoe rating for each movie/tv show
     avg_rating['Average Rating'] = (avg_rating['IMDb'] +
                                     avg_rating['Rotten Tomatoes']) / 2
-    # dict maps streaming platform to overall average rating
-    avg_platf = {}
-    netflix = avg_rating['Netflix'] == 1
-    hulu = avg_rating['Hulu'] == 1
-    prime = avg_rating['Prime Video'] == 1
-    disney = avg_rating['Disney+'] == 1
-    avg_platf['netflix'] = avg_rating.loc[netflix, 'Average Rating'].mean()
-    avg_platf['hulu'] = avg_rating.loc[hulu, 'Average Rating'].mean()
-    avg_platf['prime'] = avg_rating.loc[prime, 'Average Rating'].mean()
-    avg_platf['disney'] = avg_rating.loc[disney, 'Average Rating'].mean()
-    print('Average ratings for available movies and tv shows on each',
-          'streaming platform:')
-    for platf, rating in avg_platf.items():
-        print(platf, ": ", rating)
-    print()
+    platf = avg_rating[site] == 1
+    average = avg_rating.loc[platf, 'Average Rating'].mean()
+    return average
 
 
 def genre_count(data, site):
@@ -102,6 +87,17 @@ def genre_count(data, site):
     return length
 
 
+def split_genre(data):
+    """
+    Helper method to split genres by one hot encoding
+    """
+    df = data.copy()
+    df['Genres'] = df['Genres'].str.split(",")
+    temp = df.drop('Genres', 1)
+    temp = temp.join(df.Genres.str.join('|').str.get_dummies())
+    return temp
+
+
 def predict_rating(data, feats):
     """
     Given dataframe and column name of features to train on
@@ -110,11 +106,10 @@ def predict_rating(data, feats):
     """
     features = data.loc[:, feats]
     features = features.dropna()
+    labels = features['IMDb']
     # one hot encoding genres
-    features['Genres'] = features['Genres'].str.split(",")
-    temp = features.drop('Genres', 1).join(features.Genres.str.join('|').str.get_dummies())
-    labels = temp['IMDb']
-    features = temp.loc[:, temp.columns != 'IMDb']
+    features = split_genre(features)
+    features = features.loc[:, features.columns != 'IMDb']
     # ml model
     features_train, features_test, labels_train, labels_test = \
         train_test_split(features, labels, test_size=0.2)
@@ -130,7 +125,7 @@ def predict_rating(data, feats):
     return (train_error, test_error)
 
 
-def unquie_list(data, site):
+def unique_list(data, site):
     """
     Returns list of unique genres from given dataset and specified
     streaming platform
@@ -147,9 +142,8 @@ def movs_per_genre(data, site):
     Given dataset and streaming platform, prints total number of movies
     available for each genre in the site
     """
-    genres = data.loc[data[site] == 1, data.columns == 'Genres'] 
-    genres['Genres'] = genres['Genres'].str.split(",")
-    df = genres.drop('Genres', 1).join(genres.Genres.str.join('|').str.get_dummies())
+    genres = data.loc[data[site] == 1, data.columns == 'Genres']
+    df = split_genre(genres)
     print('The total count of movies per genre for', site)
     temp = df.sum(axis=0)
     print(temp)
@@ -163,8 +157,9 @@ def movs_per_genre(data, site):
     avg = sum(percent_list) / len(percent_list)
     print(site + " has an average genre percentage of " + str(avg))
     std = statistics.stdev(percent_list)
-    print(site + " has an standard deviation for genre percentage of " + str(std))
-    # plot
+    print(site + " has an standard deviation for genre percentage of " +
+          str(std))
+    # box plot
     fig1 = plt.figure(figsize=(10, 7))
     plt.boxplot(percent_list)
     plt.title('Box Plot of Genre Percentage for ' + site, fontsize=25, y=1.02)
@@ -175,7 +170,7 @@ def movs_per_genre(data, site):
     plt.title('Box Plot of Genre Count for ' + site, fontsize=25, y=1.02)
     location3 = 'results/' + site.lower() + '_genrecount_boxplot.png'
     fig2.savefig(location3, bbox_inches='tight')
-    # plot
+    # genre bar chart
     fig, ax = plt.subplots(figsize=(56, 15))
     ax.bar(genre_list, percent_list, width=0.6)
     plt.xlabel('Genre Types', fontsize=30, labelpad=15)
@@ -193,11 +188,11 @@ def main():
     imdb = pd.read_csv('data/IMDB_movies.csv')
     movs_shows = load_movs_shows(movies, shows)
     imdb_mov = load_imdb(imdb, movies)
-    # test
-    print(movs_shows.head())
-    print(imdb.head())
-    # end test
-    avg_rating(movs_shows)
+    # avg_rating(movs_shows)
+    print('Netflix\'s average rating:', avg_rating(movs_shows, 'Netflix'))
+    print('Hulu\'s average rating:', avg_rating(movs_shows, 'Hulu'))
+    print('Disney+\'s average rating:', avg_rating(movs_shows, 'Disney+'))
+    print('Prime\'s average rating:', avg_rating(movs_shows, 'Prime Video'))
     count(movies, 'movies', 'Netflix')
     count(movies, 'movies', 'Hulu')
     count(movies, 'movies', 'Disney+')
@@ -219,37 +214,41 @@ def main():
     print()
     # ml dtr error with streaming platforms and genres features
     feats1 = ['Netflix', 'Hulu', 'Prime Video',
-            'Disney+', 'Genres', 'IMDb']
+              'Disney+', 'Genres', 'IMDb']
     print('With', feats1)
     print('Training set mse', predict_rating(imdb_mov, feats1)[0])
     print('Testing set mse', predict_rating(imdb_mov, feats1)[1])
     print()
     # platforms, genres, duration
     feats2 = ['Netflix', 'Hulu', 'Prime Video',
-            'Disney+', 'Genres', 'duration', 'IMDb']
+              'Disney+', 'Genres', 'duration', 'IMDb']
     print('With', feats2)
     print('Training set mse', predict_rating(imdb_mov, feats2)[0])
     print('Testing set mse', predict_rating(imdb_mov, feats2)[1])
     print()
     # platforms, genres, year, and duration
     feats3 = ['Year', 'Netflix', 'Hulu', 'Prime Video',
-            'Disney+', 'Genres', 'duration', 'IMDb']
+              'Disney+', 'Genres', 'duration', 'IMDb']
     print('With', feats3)
     print('Training set mse', predict_rating(imdb_mov, feats3)[0])
     print('Testing set mse', predict_rating(imdb_mov, feats3)[1])
     print()
-    netflix_gecount = genre_count(movies, 'Netflix')
-    hulu_gecount = genre_count(movies, 'Hulu')
-    disney_gecount = genre_count(movies, 'Disney+')
-    prime_gecount = genre_count(movies, 'Prime Video')
+    print(genre_count(movies, 'Netflix'))
+    print(genre_count(movies, 'Hulu'))
+    print(genre_count(movies, 'Disney+'))
+    print(genre_count(movies, 'Prime Video'))
     movs_per_genre(movies, 'Netflix')
     movs_per_genre(movies, 'Hulu')
     movs_per_genre(movies, 'Disney+')
     movs_per_genre(movies, 'Prime Video')
-    net_df = unquie_list(movies, 'Netflix')
-    hulu_df = unquie_list(movies, 'Hulu')
-    dis_df = unquie_list(movies, 'Disney+')
-    prime_df = unquie_list(movies, 'Prime Video')
+    net_df = unique_list(movies, 'Netflix')
+    print(net_df)
+    hulu_df = unique_list(movies, 'Hulu')
+    print(hulu_df)
+    dis_df = unique_list(movies, 'Disney+')
+    print(dis_df)
+    prime_df = unique_list(movies, 'Prime Video')
+    print(prime_df)
 
 
 if __name__ == '__main__':
