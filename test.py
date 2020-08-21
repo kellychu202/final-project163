@@ -24,7 +24,7 @@ def test_genre():
 def test_unique_list():
     small_movies = pd.read_csv('data/small_movies.csv')
     assert_equals(['Action', 'Adventure', 'Sci-Fi', 'Thriller', 'Comedy', 'Western', 'Animation', \
-'               Family', 'Biography', 'Drama', 'Music', 'War', 'Crime', 'Documentary'], analysis.unquie_list(small_movies, 'Netflix'))
+'Family', 'Biography', 'Drama', 'Music', 'War', 'Crime', 'Documentary'], analysis.unquie_list(small_movies, 'Netflix'))
     assert_equals(['Documentary'], analysis.unquie_list(small_movies, 'Hulu'))
     assert_equals(['Action', 'Adventure', 'Drama', 'Family'], analysis.unquie_list(small_movies, 'Disney+'))
     assert_equals(['Western', 'Biography', 'Drama', 'Music', 'War', 'Comedy'], analysis.unquie_list(small_movies, 'Prime Video'))

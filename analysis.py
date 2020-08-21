@@ -99,6 +99,7 @@ def genre_count(data, site):
     length = len(df)
     print(df)
     print(site, 'has', length, 'genres')
+    return length
 
 
 def predict_rating(data, feats):
