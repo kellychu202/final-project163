@@ -37,6 +37,13 @@ def genre_count(data, site):
     print(site, 'has', length, 'genres')
     return length
 
+def unquie_list(data, site):
+    df = data.loc[data[site] == 1, 'Genres']
+    df = df.dropna()
+    df = df.str.split(',')
+    df = df.explode().unique()
+    return df
+
 
 def movs_per_genre(data, site):
     """
@@ -45,6 +52,7 @@ def movs_per_genre(data, site):
     """
     genres = data.loc[data[site] == 1, data.columns == 'Genres'] 
     genres['Genres'] = genres['Genres'].str.split(",")
+    mlb = MultiLabelBinarizer(sparse_output=True)
     df = genres.drop('Genres', 1).join(genres.Genres.str.join('|').str.get_dummies())
     print('The total count of movies per genre for', site)
     temp = df.sum(axis=0)
