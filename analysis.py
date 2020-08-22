@@ -37,7 +37,7 @@ def load_imdb(imdb, movies):
 
 def count(data, mov_or_show, site):
     """
-    Prints count of different titles each platform has available in the
+    Return count of different titles each platform has available in the
     given dataset
     """
     print(site, ': In this dataset there are...')
@@ -50,7 +50,7 @@ def count(data, mov_or_show, site):
 
 def avg_rating(data, site):
     """
-    Print overall average rating for given streaming platforms' available
+    Return overall average rating for given streaming platforms' available
     content given in data dataset
     """
     # Convert rotten tomatoes to 1-10 scale to match imdb scale
@@ -74,7 +74,7 @@ def avg_rating(data, site):
 
 def genre_count(data, site):
     """
-    Given a dataframe and streaming platform, prints the names and count
+    Given a dataframe and streaming platform, return the names and count
     of unique genres available on the platform
     """
     df = data.loc[data[site] == 1, 'Genres']
@@ -127,7 +127,7 @@ def predict_rating(data, feats):
 
 def unique_list(data, site):
     """
-    Returns list of unique genres from given dataset and specified
+    Returns unique genres from given dataset and specified
     streaming platform
     """
     df = data.loc[data[site] == 1, 'Genres']
@@ -142,7 +142,8 @@ def movs_per_genre(data, site):
     Given dataset and streaming platform, prints total number of movies
     available for each genre in the site, and the standard deviation. Also
     create a box chart of the count of movies for each genre for the given site
-    and a bar chart of the percentage of movies for each genre for the given site. 
+    and a bar chart of the percentage of movies for each genre for the given
+    site.
     """
     genres = data.loc[data[site] == 1, data.columns == 'Genres']
     df = split_genre(genres)
@@ -164,20 +165,24 @@ def movs_per_genre(data, site):
     # box plot
     fig1 = plt.figure(figsize=(10, 7))
     plt.boxplot(percent_list)
-    plt.title('Box Plot of Genre Percentage for ' + site, fontsize=25, y=1.02)
+    plt.title('Distribution of Genre Percentage for ' + site,
+              fontsize=25, y=1.02)
     location2 = 'results/' + site.lower() + '_genre_boxplot.png'
     fig1.savefig(location2, bbox_inches='tight')
     fig2 = plt.figure(figsize=(10, 7))
     plt.boxplot(count_list)
-    plt.title('Box Plot of Genre Count for ' + site, fontsize=25, y=1.02)
+    plt.title('Distribution of Movie Count in each Genre ' + site,
+              fontsize=25, y=1.02)
     location3 = 'results/' + site.lower() + '_genrecount_boxplot.png'
     fig2.savefig(location3, bbox_inches='tight')
     # genre bar chart
     fig, ax = plt.subplots(figsize=(56, 15))
     ax.bar(genre_list, percent_list, width=0.6)
     plt.xlabel('Genre Types', fontsize=30, labelpad=15)
-    plt.ylabel('Percent of Movies', fontsize=30, labelpad=15)
-    plt.title('The Percent for Each Genre in ' + site, fontsize=35, y=1.02)
+    plt.ylabel('Percent of Total Movies that Fit in these Genres',
+               fontsize=30, labelpad=15)
+    plt.title('Genre Distribution for ' + site,
+              fontsize=35, y=1.02)
     plt.tick_params(labelsize=20, pad=7)
     location = 'results/' + site.lower() + '_genre_chart.png'
     fig.savefig(location, bbox_inches='tight')
