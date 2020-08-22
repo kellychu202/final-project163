@@ -24,6 +24,9 @@ count: prints returns of number of unique titles in movies and tv shows merged d
 avg_rating: returns overall average rating for given streaming platforms movies and dataset
 
 genre_count: returns names and count of unique genre in given platform and dataset
+
 predict_rating: machine learning method, returns tuple of predicted imdb rating mean squared error for training and test set
+
 unique_list: returns unique genres from given dataset and specified platform
+
 movs_per_genre: generates and saves plots for each streaming platform and includes plots like box chart for counts and percentages of movies in each genre for given sites as well as bar charts for genre distribution based on percentages as well
